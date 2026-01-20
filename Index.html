@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>STIGMA ULTIMATE | V4.0.2</title>
+    <style>
+        :root {
+            --bg: #0a0a0a;
+            --panel: #141414;
+            --accent: #ff2a2a;
+            --success: #00ffa3;
+            --border: #222;
+        }
+
+        body {
+            background-color: var(--bg);
+            color: #ffffff;
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            display: flex; justify-content: center; align-items: center;
+            height: 100vh; margin: 0;
+        }
+
+        .container {
+            width: 380px;
+            background: var(--panel);
+            border: 1px solid var(--border);
+            padding: 45px 35px;
+            border-radius: 12px;
+            text-align: center;
+            box-shadow: 0 30px 60px rgba(0,0,0,0.8);
+            position: relative;
+        }
+
+        .logo {
+            font-size: 30px;
+            font-weight: 900;
+            letter-spacing: 6px;
+            color: var(--accent);
+            margin-bottom: 2px;
+        }
+
+        .tagline { color: #555; font-size: 10px; text-transform: uppercase; letter-spacing: 2px; margin-bottom: 35px; }
+
+        .hidden { display: none; }
+
+        input {
+            width: 100%;
+            padding: 15px;
+            background: #000;
+            border: 1px solid #333;
+            color: #fff;
+            border-radius: 6px;
+            margin-bottom: 20px;
+            box-sizing: border-box;
+            outline: none;
+            font-family: 'Consolas', monospace;
+            text-align: center;
+        }
+
+        input:focus { border-color: var(--accent); }
+
+        .btn {
+            width: 100%;
+            padding: 16px;
+            background: var(--accent);
+            color: white;
+            border: none;
+            border-radius: 6px;
+            font-weight: 800;
+            cursor: pointer;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            transition: 0.2s;
+        }
+
+        .btn:hover { background: #e61e1e; transform: translateY(-1px); }
+
+        /* Loading Bar */
+        .loader-bg { background: #000; height: 4px; border-radius: 10px; margin: 25px 0; overflow: hidden; }
+        .loader-fill { height: 100%; background: var(--accent); width: 0%; transition: width 0.2s ease-out; }
+
+        /* Final Screen Details */
+        .status-badge {
+            display: inline-block;
+            padding: 6px 14px;
+            background: rgba(0, 255, 163, 0.05);
+            color: var(--success);
+            border: 1px solid var(--success);
+            border-radius: 20px;
+            font-size: 10px;
+            font-weight: bold;
+            margin-bottom: 20px;
+            letter-spacing: 1px;
+        }
+
+        .injected-title { font-size: 26px; font-weight: 800; margin-bottom: 8px; color: #fff; }
+        .user-tag { background: #1a1a1a; padding: 12px; border-radius: 6px; font-family: 'Consolas', monospace; border: 1px solid #333; margin: 20px 0; color: #fff; font-size: 14px; }
+        .instruction { color: #888; font-size: 14px; line-height: 1.6; }
+    </style>
+</head>
+<body>
+
+<div id="step1" class="container">
+    <div class="logo">STIGMA</div>
+    <div class="tagline">v4.0.2 • Verified Stable</div>
+    <button class="btn" onclick="show(2)">GET STARTED</button>
+</div>
+
+<div id="step2" class="container hidden">
+    <div class="logo">LOGIN</div>
+    <div class="tagline">Authentication Required</div>
+    <input type="text" id="username" placeholder="Roblox Username" autocomplete="off">
+    <button class="btn" onclick="startLoading()">ATTACH EXECUTOR</button>
+</div>
+
+<div id="step3" class="container hidden">
+    <div class="logo" style="color:white">ATTACHING</div>
+    <div id="status-text" class="tagline">Searching for process...</div>
+    <div class="loader-bg"><div id="bar" class="loader-fill"></div></div>
+</div>
+
+<div id="step4" class="container hidden">
+    <div class="status-badge">SESSION VERIFIED</div>
+    <div class="injected-title">Injected</div>
+    <div id="final-user" class="user-tag">User: </div>
+    <div class="instruction">
+        Stigma Ultimate has successfully attached.<br>
+        <b style="color:white; font-size: 16px;">Join Any Game In Roblox</b>
+    </div>
+</div>
+
+<script>
+    function show(step) {
+        document.querySelectorAll('.container').forEach(c => c.classList.add('hidden'));
+        document.getElementById('step' + step).classList.remove('hidden');
+    }
+
+    function startLoading() {
+        const user = document.getElementById('username').value;
+        if(!user || user.length < 3) {
+            alert("Please enter a valid Roblox username.");
+            return;
+        }
+        
+        show(3);
+        let width = 0;
+        const bar = document.getElementById('bar');
+        const status = document.getElementById('status-text');
+
+        const interval = setInterval(() => {
+            width += Math.random() * 4;
+            bar.style.width = width + "%";
+
+            if (width > 15) status.innerText = "Bypassing Hyperion v4...";
+            if (width > 45) status.innerText = "Injecting Stigma.dll...";
+            if (width > 75) status.innerText = "Running Handshake...";
+
+            if (width >= 100) {
+                clearInterval(interval);
+                document.getElementById('final-user').innerText = "User: " + user;
+                show(4);
+            }
+        }, 120);
+    }
+</script>
+
+</body>
+  </html>
