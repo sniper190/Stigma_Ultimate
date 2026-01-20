@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>STIGMA ULTIMATE | Cloud Panel</title>
+    <title>STIGMA ULTIMATE | Live Dashboard</title>
     <style>
         :root {
             --bg: #090909;
@@ -11,7 +11,6 @@
             --accent: #ff2a2a;
             --success: #00ffa3;
             --border: #222;
-            --text-dim: #666;
         }
 
         body {
@@ -26,145 +25,156 @@
             width: 480px;
             background: var(--panel);
             border: 1px solid var(--border);
-            padding: 35px;
+            padding: 30px;
             border-radius: 12px;
             text-align: center;
             box-shadow: 0 40px 80px rgba(0,0,0,0.9);
         }
 
-        .logo { font-size: 26px; font-weight: 900; letter-spacing: 5px; color: var(--accent); }
-        .tagline { color: var(--text-dim); font-size: 10px; text-transform: uppercase; letter-spacing: 2px; margin-bottom: 25px; }
+        .logo { font-size: 24px; font-weight: 900; letter-spacing: 5px; color: var(--accent); margin-bottom: 20px; }
         .hidden { display: none; }
 
-        input {
-            width: 100%; padding: 15px; background: #000; border: 1px solid #333;
-            color: #fff; border-radius: 6px; margin-bottom: 20px; box-sizing: border-box; outline: none;
+        /* User Header */
+        .user-profile {
+            display: flex; align-items: center; background: #000;
+            padding: 15px; border-radius: 8px; border: 1px solid #222; margin-bottom: 15px;
         }
+        .avatar { width: 60px; height: 60px; border-radius: 50%; border: 2px solid var(--accent); margin-right: 15px; background: #111; }
+        .user-details { text-align: left; }
+        .online-dot { height: 8px; width: 8px; border-radius: 50%; display: inline-block; margin-right: 5px; }
 
-        .btn {
-            width: 100%; padding: 16px; background: var(--accent); color: white;
-            border: none; border-radius: 6px; font-weight: bold; cursor: pointer; text-transform: uppercase;
-        }
-
-        /* Menu Components */
-        .info-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 15px; }
-        .info-card { background: #0d0d0d; border: 1px solid #222; padding: 12px; border-radius: 6px; text-align: left; }
-        .info-label { font-size: 9px; color: var(--text-dim); text-transform: uppercase; }
-        .info-value { font-size: 13px; font-weight: bold; margin-top: 4px; color: #eee; }
+        /* Dashboard Content */
+        .info-card { background: #0d0d0d; border: 1px solid #222; padding: 12px; border-radius: 6px; text-align: left; margin-bottom: 10px; }
+        .label { font-size: 9px; color: #555; text-transform: uppercase; }
+        .value { font-size: 13px; font-weight: bold; color: #eee; }
 
         .log-window {
             background: #000; border: 1px solid #222; border-radius: 6px;
-            height: 100px; padding: 12px; text-align: left; font-family: monospace;
-            font-size: 11px; color: #00ff88; overflow-y: hidden; margin-top: 15px;
+            height: 120px; padding: 12px; text-align: left; font-family: monospace;
+            font-size: 11px; color: #00ff88; overflow-y: auto; margin-top: 10px;
         }
 
-        .code-box {
-            background: #0d0d0d; color: #ff3c3c; font-family: monospace; font-size: 10px;
-            padding: 10px; border-radius: 4px; border: 1px solid #222; overflow-x: auto;
-            white-space: nowrap; margin-top: 10px;
-        }
-
-        .loader-bg { background: #000; height: 3px; border-radius: 10px; margin: 20px 0; overflow: hidden; }
-        .loader-fill { height: 100%; background: var(--accent); width: 0%; transition: width 0.2s; }
+        input { width: 100%; padding: 15px; background: #000; border: 1px solid #333; color: #fff; border-radius: 6px; margin-bottom: 15px; box-sizing: border-box; }
+        .btn { width: 100%; padding: 16px; background: var(--accent); color: white; border: none; border-radius: 6px; font-weight: bold; cursor: pointer; }
     </style>
 </head>
 <body>
 
 <div id="step1" class="container">
     <div class="logo">STIGMA</div>
-    <div class="tagline">V4.0 CLOUD INJECTION</div>
-    <input type="text" id="username" placeholder="Roblox Username" autocomplete="off">
-    <button class="btn" onclick="startLoading()">INITIALIZE CONNECTION</button>
+    <input type="text" id="username" placeholder="Enter Roblox Username">
+    <button class="btn" onclick="startSync()">START CLOUD SYNC</button>
 </div>
 
 <div id="step2" class="container hidden">
-    <div class="logo" style="color:white">SYNCING</div>
-    <div id="status-text" class="tagline">Bypassing...</div>
-    <div class="loader-bg"><div id="bar" class="loader-fill"></div></div>
-</div>
-
-<div id="step3" class="container hidden">
-    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px;">
-        <div class="logo" style="font-size:18px">STIGMA <span style="color:white">PANEL</span></div>
-        <div style="font-size:10px; color:var(--success)">● ATTACHED</div>
-    </div>
-
-    <div class="info-grid">
-        <div class="info-card">
-            <div class="info-label">Active User</div>
-            <div id="user-val" class="info-value">None</div>
-        </div>
-        <div class="info-card">
-            <div class="info-label">Current Game</div>
-            <div id="game-val" class="info-value" style="color:var(--accent)">Scanning...</div>
+    <div class="logo" style="font-size: 18px;">STIGMA <span style="color:white">LIVE</span></div>
+    
+    <div class="user-profile">
+        <img id="pfp" class="avatar" src="" alt="">
+        <div class="user-details">
+            <div id="disp-name" style="font-weight: bold;">Loading...</div>
+            <div id="status-row" style="font-size: 12px;">
+                <span id="dot" class="online-dot"></span>
+                <span id="status-text">Checking...</span>
+            </div>
         </div>
     </div>
 
-    <div class="info-card" style="width:auto">
-        <div class="info-label">Auto-Execute String</div>
-        <div class="code-box">loadstring(game:HttpGet("https://raw.githubusercontent.com/C-Dr1ve/..."))()</div>
+    <div class="info-card">
+        <div class="label">Current Game Instance</div>
+        <div id="game-val" class="value" style="color:var(--accent)">Scanning for Process...</div>
     </div>
 
-    <div id="log-window" class="log-window">
-        [SYSTEM] Waiting for process...
+    <div class="log-window" id="logs">
+        [SYS] Initializing Handshake...
     </div>
-
-    <p style="color:var(--text-dim); font-size:12px; margin-top:20px">
-        <b>Join any Roblox game.</b> The Stigma UI will deploy automatically.
-    </p>
 </div>
 
 <script>
-    function startLoading() {
-        const user = document.getElementById('username').value;
-        if(!user) return;
+    let currentUser = "";
+    const loadstring = 'loadstring(game:HttpGet("https://raw.githubusercontent.com/C-Dr1ve/Executor-Remakes-In-Lua/refs/heads/main/Remakes/Stigma_Revision_0.lua"))()';
+
+    async function startSync() {
+        currentUser = document.getElementById('username').value;
+        if(!currentUser) return;
+        
         document.getElementById('step1').classList.add('hidden');
         document.getElementById('step2').classList.remove('hidden');
 
-        let w = 0;
-        const bar = document.getElementById('bar');
-        const st = document.getElementById('status-text');
+        // Initial Data Fetch
+        fetchRobloxData();
+        
+        // Start the 3-second Loop
+        setInterval(fetchRobloxData, 3000);
 
-        const int = setInterval(() => {
-            w += Math.random() * 6;
-            bar.style.width = w + "%";
-            if(w > 30) st.innerText = "Hooking Engine...";
-            if(w > 60) st.innerText = "Injecting Modules...";
-            if(w >= 100) { clearInterval(int); finish(user); }
-        }, 120);
+        // Start the Logs
+        addLog("[CLOUD] Connection Established.");
+        setTimeout(() => addLog("[MEM] Injecting: " + loadstring), 1500);
+        setTimeout(() => addLog("[AUTH] Session Verified."), 3000);
     }
 
-    function finish(user) {
-        document.getElementById('step2').classList.add('hidden');
-        document.getElementById('step3').classList.remove('hidden');
-        document.getElementById('user-val').innerText = user;
+    async function fetchRobloxData() {
+        try {
+            // Step 1: Get User ID from Name
+            const userRes = await fetch(`https://corsproxy.io/?https://users.roblox.com/v1/usernames/users`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ usernames: [currentUser], "excludeBannedUsers": true })
+            });
+            const userData = await userRes.json();
+            const userId = userData.data[0].id;
+            const displayName = userData.data[0].displayName;
 
-        const logs = [
-            "[CLOUD] Handshake successful.",
-            "[AUTH] Session key validated.",
-            "[MEM] Stigma_Revision_0.lua queued.",
-            "[INFO] Waiting for Game Client...",
-            "[INFO] Polling Roblox API..."
-        ];
+            // Step 2: Get Avatar
+            document.getElementById('pfp').src = `https://www.roblox.com/headshot-thumbnail/image?userId=${userId}&width=420&height=420&format=png`;
+            document.getElementById('disp-name').innerText = displayName;
 
-        let i = 0;
-        const win = document.getElementById('log-window');
-        const logInt = setInterval(() => {
-            if(i < logs.length) {
-                win.innerHTML += `<div>${logs[i]}</div>`;
-                i++;
-            } else {
-                clearInterval(logInt);
-                // Fake Game Detection after logs finish
-                setTimeout(() => {
-                    document.getElementById('game-val').style.color = "#00ffa3";
-                    document.getElementById('game-val').innerText = "Detected: Blox Fruits";
-                    win.innerHTML += `<div style="color:white">[SUCCESS] Attached to Blox Fruits</div>`;
-                }, 3000);
-            }
-        }, 1000);
+            // Step 3: Get Presence (Online/Game status)
+            const presRes = await fetch(`https://corsproxy.io/?https://presence.roblox.com/v1/presence/users`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ userIds: [userId] })
+            });
+            const presData = await presRes.json();
+            const presence = presData.userPresences[0];
+
+            updateStatus(presence);
+        } catch (e) {
+            console.log("Waiting for API...");
+        }
+    }
+
+    function updateStatus(p) {
+        const dot = document.getElementById('dot');
+        const txt = document.getElementById('status-text');
+        const game = document.getElementById('game-val');
+
+        if (p.userPresenceType === 2) { // In Game
+            dot.style.background = "#00ffa3";
+            txt.innerText = "In-Game";
+            txt.style.color = "#00ffa3";
+            game.innerText = p.lastLocation || "Detected: Roblox Game";
+            game.style.color = "#00ffa3";
+        } else if (p.userPresenceType === 1) { // Online
+            dot.style.background = "#00ffa3";
+            txt.innerText = "Online";
+            txt.style.color = "#00ffa3";
+            game.innerText = "Waiting for game join...";
+            game.style.color = "#ff2a2a";
+        } else { // Offline
+            dot.style.background = "#ff2a2a";
+            txt.innerText = "Offline";
+            txt.style.color = "#ff2a2a";
+            game.innerText = "Roblox Not Detected";
+        }
+    }
+
+    function addLog(msg) {
+        const win = document.getElementById('logs');
+        win.innerHTML += `<div>${msg}</div>`;
+        win.scrollTop = win.scrollHeight;
     }
 </script>
 
 </body>
-                                                                       </html>
+        </html>
