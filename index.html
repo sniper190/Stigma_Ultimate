@@ -2,179 +2,161 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>STIGMA ULTIMATE | Live Dashboard</title>
+    <title>STIGMA ULTIMATE | Dashboard</title>
     <style>
-        :root {
-            --bg: #090909;
-            --panel: #121212;
-            --accent: #ff2a2a;
-            --success: #00ffa3;
-            --border: #222;
-        }
+        :root { --bg: #060606; --panel: #0d0d0d; --accent: #ff2a2a; --success: #00ffa3; --border: #1a1a1a; }
+        body { background: var(--bg); color: white; font-family: 'Inter', sans-serif; display: flex; justify-content: center; align-items: center; height: 100vh; margin: 0; overflow: hidden; }
+        .container { width: 460px; background: var(--panel); border: 1px solid var(--border); padding: 30px; border-radius: 12px; box-shadow: 0 50px 100px rgba(0,0,0,1); text-align: center; position: relative; }
+        .logo { font-size: 28px; font-weight: 900; letter-spacing: 7px; color: var(--accent); margin-bottom: 25px; text-shadow: 0 0 15px rgba(255, 42, 42, 0.4); }
+        
+        /* Profile Section */
+        .profile-card { display: flex; align-items: center; background: #000; padding: 18px; border-radius: 8px; border: 1px solid #222; margin-bottom: 15px; text-align: left; }
+        .avatar { width: 70px; height: 70px; border-radius: 50%; border: 2px solid var(--accent); margin-right: 18px; background: #0a0a0a; box-shadow: 0 0 15px rgba(255,42,42,0.2); }
+        .status-dot { height: 10px; width: 10px; border-radius: 50%; display: inline-block; margin-right: 8px; box-shadow: 0 0 8px currentColor; }
+        .username-label { font-size: 13px; color: #555; font-family: monospace; font-weight: bold; margin-top: 2px; }
 
-        body {
-            background-color: var(--bg);
-            color: #ffffff;
-            font-family: 'Inter', sans-serif;
-            display: flex; justify-content: center; align-items: center;
-            height: 100vh; margin: 0;
-        }
-
-        .container {
-            width: 480px;
-            background: var(--panel);
-            border: 1px solid var(--border);
-            padding: 30px;
-            border-radius: 12px;
-            text-align: center;
-            box-shadow: 0 40px 80px rgba(0,0,0,0.9);
-        }
-
-        .logo { font-size: 24px; font-weight: 900; letter-spacing: 5px; color: var(--accent); margin-bottom: 20px; }
+        /* Game & Log Cards */
+        .info-box { background: #000; border: 1px solid #1a1a1a; padding: 14px; border-radius: 6px; text-align: left; margin-bottom: 12px; border-left: 3px solid var(--accent); }
+        .label { font-size: 10px; color: #444; text-transform: uppercase; font-weight: 800; letter-spacing: 1.5px; }
+        .value { font-size: 14px; font-weight: bold; margin-top: 5px; color: #eee; }
+        .log-window { background: #000; border: 1px solid #1a1a1a; height: 110px; padding: 12px; font-family: monospace; font-size: 11px; color: #00ff88; overflow-y: auto; text-align: left; border-radius: 6px; }
+        
+        /* Buttons/Input */
+        input { width: 100%; padding: 16px; background: #000; border: 1px solid #222; color: #fff; border-radius: 6px; margin-bottom: 10px; box-sizing: border-box; text-align: center; outline: none; }
+        .btn { width: 100%; padding: 18px; background: var(--accent); color: white; border: none; border-radius: 6px; font-weight: 900; cursor: pointer; text-transform: uppercase; transition: 0.2s; }
+        .btn:hover { background: #ff0000; box-shadow: 0 0 20px rgba(255, 42, 42, 0.4); }
+        .music-btn { position: absolute; top: 15px; right: 15px; background: #000; border: 1px solid #222; color: #444; font-size: 10px; padding: 6px 10px; cursor: pointer; border-radius: 4px; }
         .hidden { display: none; }
-
-        /* User Header */
-        .user-profile {
-            display: flex; align-items: center; background: #000;
-            padding: 15px; border-radius: 8px; border: 1px solid #222; margin-bottom: 15px;
-        }
-        .avatar { width: 60px; height: 60px; border-radius: 50%; border: 2px solid var(--accent); margin-right: 15px; background: #111; }
-        .user-details { text-align: left; }
-        .online-dot { height: 8px; width: 8px; border-radius: 50%; display: inline-block; margin-right: 5px; }
-
-        /* Dashboard Content */
-        .info-card { background: #0d0d0d; border: 1px solid #222; padding: 12px; border-radius: 6px; text-align: left; margin-bottom: 10px; }
-        .label { font-size: 9px; color: #555; text-transform: uppercase; }
-        .value { font-size: 13px; font-weight: bold; color: #eee; }
-
-        .log-window {
-            background: #000; border: 1px solid #222; border-radius: 6px;
-            height: 120px; padding: 12px; text-align: left; font-family: monospace;
-            font-size: 11px; color: #00ff88; overflow-y: auto; margin-top: 10px;
-        }
-
-        input { width: 100%; padding: 15px; background: #000; border: 1px solid #333; color: #fff; border-radius: 6px; margin-bottom: 15px; box-sizing: border-box; }
-        .btn { width: 100%; padding: 16px; background: var(--accent); color: white; border: none; border-radius: 6px; font-weight: bold; cursor: pointer; }
     </style>
 </head>
 <body>
 
+<audio id="bg-music" loop>
+    <source src="https://audio.ngfiles.com/1213000/1213630_TheFatRat---Hunger.mp3" type="audio/mpeg">
+</audio>
+
 <div id="step1" class="container">
     <div class="logo">STIGMA</div>
-    <input type="text" id="username" placeholder="Enter Roblox Username">
-    <button class="btn" onclick="startSync()">START CLOUD SYNC</button>
+    <input type="text" id="roblox-user" placeholder="Enter Roblox Username">
+    <button class="btn" onclick="initialize()">Initialize System</button>
 </div>
 
 <div id="step2" class="container hidden">
-    <div class="logo" style="font-size: 18px;">STIGMA <span style="color:white">LIVE</span></div>
+    <button class="music-btn" id="mBtn" onclick="toggleMusic()">🎵 MUSIC: OFF</button>
+    <div class="logo" style="font-size: 18px; margin-bottom: 15px;">STIGMA <span style="color:white">CLOUD</span></div>
     
-    <div class="user-profile">
-        <img id="pfp" class="avatar" src="" alt="">
-        <div class="user-details">
-            <div id="disp-name" style="font-weight: bold;">Loading...</div>
-            <div id="status-row" style="font-size: 12px;">
-                <span id="dot" class="online-dot"></span>
-                <span id="status-text">Checking...</span>
+    <div class="profile-card">
+        <img id="pfp" class="avatar" src="">
+        <div>
+            <div id="d-name" style="font-weight: 900; font-size: 18px;">---</div>
+            <div id="u-name" class="username-label">@---</div>
+            <div style="font-size: 11px; margin-top: 6px; font-weight: bold;">
+                <span id="s-dot" class="status-dot" style="background: #333;"></span>
+                <span id="s-text" style="color:#555">SYNCING...</span>
             </div>
         </div>
     </div>
 
-    <div class="info-card">
-        <div class="label">Current Game Instance</div>
-        <div id="game-val" class="value" style="color:var(--accent)">Scanning for Process...</div>
+    <div class="info-box">
+        <div class="label">Current Game Activity</div>
+        <div id="g-name" class="value" style="color: var(--accent);">Fetching Instance...</div>
     </div>
 
-    <div class="log-window" id="logs">
-        [SYS] Initializing Handshake...
+    <div id="logs" class="log-window">
+        [SYS] Stigma Cloud v4 Live.
     </div>
+
+    <button class="btn" onclick="execute()" style="margin-top: 15px; background: var(--success); color: black;">EXECUTE LOADSTRING</button>
 </div>
 
 <script>
-    let currentUser = "";
-    const loadstring = 'loadstring(game:HttpGet("https://raw.githubusercontent.com/C-Dr1ve/Executor-Remakes-In-Lua/refs/heads/main/Remakes/Stigma_Revision_0.lua"))()';
+    let username = "";
+    let playing = false;
+    const mailbox = "https://kvdb.io/S9Uq87n4wE5r6y7t8u9i/stigma_cmd"; // Your Direct Mailbox
+    const script = 'loadstring(game:HttpGet("https://raw.githubusercontent.com/C-Dr1ve/Executor-Remakes-In-Lua/refs/heads/main/Remakes/Stigma_Revision_0.lua"))()';
 
-    async function startSync() {
-        currentUser = document.getElementById('username').value;
-        if(!currentUser) return;
-        
+    async function initialize() {
+        username = document.getElementById('roblox-user').value;
+        if(!username) return;
+
         document.getElementById('step1').classList.add('hidden');
         document.getElementById('step2').classList.remove('hidden');
 
-        // Initial Data Fetch
-        fetchRobloxData();
-        
-        // Start the 3-second Loop
-        setInterval(fetchRobloxData, 3000);
+        toggleMusic(); // Start The FatRat
+        addLog("[AUTH] Authenticated as " + username);
+        addLog("[CLOUD] Stigma Hub Link Established.");
 
-        // Start the Logs
-        addLog("[CLOUD] Connection Established.");
-        setTimeout(() => addLog("[MEM] Injecting: " + loadstring), 1500);
-        setTimeout(() => addLog("[AUTH] Session Verified."), 3000);
+        updateInfo();
+        setInterval(updateInfo, 3000); 
     }
 
-    async function fetchRobloxData() {
+    async function updateInfo() {
         try {
-            // Step 1: Get User ID from Name
-            const userRes = await fetch(`https://corsproxy.io/?https://users.roblox.com/v1/usernames/users`, {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ usernames: [currentUser], "excludeBannedUsers": true })
+            // Get ID and Names
+            const uReq = await fetch(`https://corsproxy.io/?https://users.roblox.com/v1/usernames/users`, {
+                method: 'POST', headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify({usernames: [username]})
             });
-            const userData = await userRes.json();
-            const userId = userData.data[0].id;
-            const displayName = userData.data[0].displayName;
+            const uData = await uReq.json();
+            const user = uData.data[0];
 
-            // Step 2: Get Avatar
-            document.getElementById('pfp').src = `https://www.roblox.com/headshot-thumbnail/image?userId=${userId}&width=420&height=420&format=png`;
-            document.getElementById('disp-name').innerText = displayName;
+            document.getElementById('pfp').src = `https://www.roblox.com/headshot-thumbnail/image?userId=${user.id}&width=420&height=420&format=png`;
+            document.getElementById('d-name').innerText = user.displayName;
+            document.getElementById('u-name').innerText = "@" + user.name;
 
-            // Step 3: Get Presence (Online/Game status)
-            const presRes = await fetch(`https://corsproxy.io/?https://presence.roblox.com/v1/presence/users`, {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ userIds: [userId] })
+            // Get Game Status
+            const pReq = await fetch(`https://corsproxy.io/?https://presence.roblox.com/v1/presence/users`, {
+                method: 'POST', headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify({userIds: [user.id]})
             });
-            const presData = await presRes.json();
-            const presence = presData.userPresences[0];
+            const pData = await pReq.json();
+            const presence = pData.userPresences[0];
 
-            updateStatus(presence);
-        } catch (e) {
-            console.log("Waiting for API...");
+            const dot = document.getElementById('s-dot');
+            const txt = document.getElementById('s-text');
+            const game = document.getElementById('g-name');
+
+            if(presence.userPresenceType === 2) { // In Game
+                dot.style.background = "#00ffa3"; dot.style.color = "#00ffa3";
+                txt.innerText = "ONLINE (IN-GAME)"; txt.style.color = "#00ffa3";
+                game.innerText = presence.lastLocation; game.style.color = "#00ffa3";
+            } else if(presence.userPresenceType === 1) { // Online
+                dot.style.background = "#00ffa3"; dot.style.color = "#00ffa3";
+                txt.innerText = "ONLINE"; txt.style.color = "#00ffa3";
+                game.innerText = "Browsing Website"; game.style.color = "#ff2a2a";
+            } else {
+                dot.style.background = "#ff2a2a"; dot.style.color = "#ff2a2a";
+                txt.innerText = "OFFLINE"; txt.style.color = "#ff2a2a";
+                game.innerText = "Roblox Client Closed"; game.style.color = "#444";
+            }
+        } catch(e) {}
+    }
+
+    async function execute() {
+        addLog("[SENDING] Requesting Stigma execution...");
+        try {
+            await fetch(mailbox, { method: 'POST', body: script });
+            addLog("[SUCCESS] Loadstring broadcasted to Game Client.");
+        } catch(e) {
+            addLog("[ERROR] Cloud Sync Failed.");
         }
     }
 
-    function updateStatus(p) {
-        const dot = document.getElementById('dot');
-        const txt = document.getElementById('status-text');
-        const game = document.getElementById('game-val');
-
-        if (p.userPresenceType === 2) { // In Game
-            dot.style.background = "#00ffa3";
-            txt.innerText = "In-Game";
-            txt.style.color = "#00ffa3";
-            game.innerText = p.lastLocation || "Detected: Roblox Game";
-            game.style.color = "#00ffa3";
-        } else if (p.userPresenceType === 1) { // Online
-            dot.style.background = "#00ffa3";
-            txt.innerText = "Online";
-            txt.style.color = "#00ffa3";
-            game.innerText = "Waiting for game join...";
-            game.style.color = "#ff2a2a";
-        } else { // Offline
-            dot.style.background = "#ff2a2a";
-            txt.innerText = "Offline";
-            txt.style.color = "#ff2a2a";
-            game.innerText = "Roblox Not Detected";
-        }
+    function addLog(m) {
+        const w = document.getElementById('logs');
+        w.innerHTML += `<div>${m}</div>`;
+        w.scrollTop = w.scrollHeight;
     }
 
-    function addLog(msg) {
-        const win = document.getElementById('logs');
-        win.innerHTML += `<div>${msg}</div>`;
-        win.scrollTop = win.scrollHeight;
+    function toggleMusic() {
+        const m = document.getElementById('bg-music');
+        const b = document.getElementById('mBtn');
+        if(!playing) {
+            m.play(); b.innerText = "🎵 MUSIC: ON"; b.style.color = "#00ffa3"; playing = true;
+        } else {
+            m.pause(); b.innerText = "🎵 MUSIC: OFF"; b.style.color = "#444"; playing = false;
+        }
     }
 </script>
-
 </body>
-        </html>
+    </html>
