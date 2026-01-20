@@ -2,161 +2,156 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>STIGMA ULTIMATE | Dashboard</title>
+    <title>STIGMA | System Overview</title>
     <style>
-        :root { --bg: #060606; --panel: #0d0d0d; --accent: #ff2a2a; --success: #00ffa3; --border: #1a1a1a; }
-        body { background: var(--bg); color: white; font-family: 'Inter', sans-serif; display: flex; justify-content: center; align-items: center; height: 100vh; margin: 0; overflow: hidden; }
-        .container { width: 460px; background: var(--panel); border: 1px solid var(--border); padding: 30px; border-radius: 12px; box-shadow: 0 50px 100px rgba(0,0,0,1); text-align: center; position: relative; }
-        .logo { font-size: 28px; font-weight: 900; letter-spacing: 7px; color: var(--accent); margin-bottom: 25px; text-shadow: 0 0 15px rgba(255, 42, 42, 0.4); }
+        :root { --bg: #050505; --panel: #0a0a0a; --accent: #ff2a2a; --text: #ffffff; --dim: #555; }
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Inter', sans-serif; }
         
-        /* Profile Section */
-        .profile-card { display: flex; align-items: center; background: #000; padding: 18px; border-radius: 8px; border: 1px solid #222; margin-bottom: 15px; text-align: left; }
-        .avatar { width: 70px; height: 70px; border-radius: 50%; border: 2px solid var(--accent); margin-right: 18px; background: #0a0a0a; box-shadow: 0 0 15px rgba(255,42,42,0.2); }
-        .status-dot { height: 10px; width: 10px; border-radius: 50%; display: inline-block; margin-right: 8px; box-shadow: 0 0 8px currentColor; }
-        .username-label { font-size: 13px; color: #555; font-family: monospace; font-weight: bold; margin-top: 2px; }
+        body { background: var(--bg); color: var(--text); height: 100vh; overflow: hidden; }
 
-        /* Game & Log Cards */
-        .info-box { background: #000; border: 1px solid #1a1a1a; padding: 14px; border-radius: 6px; text-align: left; margin-bottom: 12px; border-left: 3px solid var(--accent); }
-        .label { font-size: 10px; color: #444; text-transform: uppercase; font-weight: 800; letter-spacing: 1.5px; }
-        .value { font-size: 14px; font-weight: bold; margin-top: 5px; color: #eee; }
-        .log-window { background: #000; border: 1px solid #1a1a1a; height: 110px; padding: 12px; font-family: monospace; font-size: 11px; color: #00ff88; overflow-y: auto; text-align: left; border-radius: 6px; }
+        /* Login Overlay */
+        #setup { position: fixed; inset: 0; background: #000; z-index: 100; display: flex; flex-direction: column; justify-content: center; align-items: center; }
+        #setup input { background: #111; border: 1px solid #222; padding: 15px; width: 300px; color: white; border-radius: 4px; text-align: center; margin-bottom: 10px; outline: none; }
+        #setup button { background: var(--accent); color: white; border: none; padding: 12px 30px; font-weight: bold; cursor: pointer; border-radius: 4px; letter-spacing: 2px; }
+
+        /* Main Layout */
+        .dashboard { display: grid; grid-template-columns: 320px 1fr; grid-template-rows: 80px 1fr; height: 100vh; }
+
+        /* Top Header */
+        header { grid-column: 1 / 3; border-bottom: 1px solid #111; display: flex; align-items: center; justify-content: space-between; padding: 0 40px; background: #080808; }
+        .logo { color: var(--accent); font-weight: 900; letter-spacing: 8px; font-size: 20px; }
+        .version { font-family: monospace; color: var(--dim); font-size: 12px; }
+
+        /* Sidebar Profile */
+        aside { background: var(--panel); border-right: 1px solid #111; padding: 40px 20px; display: flex; flex-direction: column; align-items: center; }
+        .avatar { width: 120px; height: 120px; border-radius: 50%; border: 2px solid var(--accent); margin-bottom: 20px; box-shadow: 0 0 30px rgba(255, 42, 42, 0.2); }
+        .name-box { text-align: center; margin-bottom: 30px; }
+        .d-name { font-size: 20px; font-weight: bold; }
+        .u-name { font-size: 14px; color: var(--dim); font-family: monospace; }
         
-        /* Buttons/Input */
-        input { width: 100%; padding: 16px; background: #000; border: 1px solid #222; color: #fff; border-radius: 6px; margin-bottom: 10px; box-sizing: border-box; text-align: center; outline: none; }
-        .btn { width: 100%; padding: 18px; background: var(--accent); color: white; border: none; border-radius: 6px; font-weight: 900; cursor: pointer; text-transform: uppercase; transition: 0.2s; }
-        .btn:hover { background: #ff0000; box-shadow: 0 0 20px rgba(255, 42, 42, 0.4); }
-        .music-btn { position: absolute; top: 15px; right: 15px; background: #000; border: 1px solid #222; color: #444; font-size: 10px; padding: 6px 10px; cursor: pointer; border-radius: 4px; }
-        .hidden { display: none; }
+        /* Status Display */
+        .status-pill { padding: 6px 15px; background: #111; border-radius: 20px; font-size: 10px; font-weight: bold; border: 1px solid #222; text-transform: uppercase; letter-spacing: 1px; }
+        .injected-txt { color: #00ffa3; text-shadow: 0 0 10px #00ffa3; font-weight: 900; font-size: 14px; margin-top: 20px; }
+
+        /* Main Content */
+        main { padding: 40px; display: flex; flex-direction: column; gap: 20px; }
+        .card { background: #080808; border: 1px solid #111; border-radius: 8px; padding: 30px; }
+        .card-label { font-size: 11px; color: var(--dim); text-transform: uppercase; letter-spacing: 2px; margin-bottom: 10px; }
+        .game-title { font-size: 32px; font-weight: 800; color: #fff; }
+
+        /* Log Terminal */
+        .terminal { flex: 1; background: #000; border: 1px solid #111; border-radius: 8px; padding: 20px; font-family: 'Consolas', monospace; font-size: 13px; overflow-y: auto; color: #888; }
+        .terminal div { margin-bottom: 5px; }
+        .terminal span { color: var(--accent); margin-right: 10px; }
+
+        .hidden { display: none !important; }
     </style>
 </head>
 <body>
 
-<audio id="bg-music" loop>
-    <source src="https://audio.ngfiles.com/1213000/1213630_TheFatRat---Hunger.mp3" type="audio/mpeg">
-</audio>
-
-<div id="step1" class="container">
-    <div class="logo">STIGMA</div>
-    <input type="text" id="roblox-user" placeholder="Enter Roblox Username">
-    <button class="btn" onclick="initialize()">Initialize System</button>
+<div id="setup">
+    <div class="logo" style="margin-bottom: 30px;">STIGMA</div>
+    <input type="text" id="user-in" placeholder="ROBLOX USERNAME">
+    <button onclick="boot()">INITIALIZE</button>
 </div>
 
-<div id="step2" class="container hidden">
-    <button class="music-btn" id="mBtn" onclick="toggleMusic()">🎵 MUSIC: OFF</button>
-    <div class="logo" style="font-size: 18px; margin-bottom: 15px;">STIGMA <span style="color:white">CLOUD</span></div>
-    
-    <div class="profile-card">
+<div class="dashboard">
+    <header>
+        <div class="logo">STIGMA</div>
+        <div class="version">BUILD_VERSION: 4.0.0.1_STABLE</div>
+    </header>
+
+    <aside>
         <img id="pfp" class="avatar" src="">
-        <div>
-            <div id="d-name" style="font-weight: 900; font-size: 18px;">---</div>
-            <div id="u-name" class="username-label">@---</div>
-            <div style="font-size: 11px; margin-top: 6px; font-weight: bold;">
-                <span id="s-dot" class="status-dot" style="background: #333;"></span>
-                <span id="s-text" style="color:#555">SYNCING...</span>
-            </div>
+        <div class="name-box">
+            <div id="disp-name" class="d-name">---</div>
+            <div id="user-name" class="u-name">@---</div>
         </div>
-    </div>
+        <div id="stat-pill" class="status-pill">SCANNING...</div>
+        <div class="injected-txt">✓ INJECTED</div>
+    </aside>
 
-    <div class="info-box">
-        <div class="label">Current Game Activity</div>
-        <div id="g-name" class="value" style="color: var(--accent);">Fetching Instance...</div>
-    </div>
+    <main>
+        <div class="card">
+            <div class="card-label">Current Instance Activity</div>
+            <div id="game-name" class="game-title">Waiting for game...</div>
+        </div>
 
-    <div id="logs" class="log-window">
-        [SYS] Stigma Cloud v4 Live.
-    </div>
-
-    <button class="btn" onclick="execute()" style="margin-top: 15px; background: var(--success); color: black;">EXECUTE LOADSTRING</button>
+        <div class="terminal" id="logs">
+            <div><span>[14:22:01]</span> Kernel.Initialize()</div>
+            <div><span>[14:22:02]</span> Cloud_Sync.Connect()</div>
+        </div>
+    </main>
 </div>
 
 <script>
-    let username = "";
-    let playing = false;
-    const mailbox = "https://kvdb.io/S9Uq87n4wE5r6y7t8u9i/stigma_cmd"; // Your Direct Mailbox
-    const script = 'loadstring(game:HttpGet("https://raw.githubusercontent.com/C-Dr1ve/Executor-Remakes-In-Lua/refs/heads/main/Remakes/Stigma_Revision_0.lua"))()';
-
-    async function initialize() {
-        username = document.getElementById('roblox-user').value;
-        if(!username) return;
-
-        document.getElementById('step1').classList.add('hidden');
-        document.getElementById('step2').classList.remove('hidden');
-
-        toggleMusic(); // Start The FatRat
-        addLog("[AUTH] Authenticated as " + username);
-        addLog("[CLOUD] Stigma Hub Link Established.");
-
-        updateInfo();
-        setInterval(updateInfo, 3000); 
+    let user = "";
+    async function boot() {
+        user = document.getElementById('user-in').value;
+        if(!user) return;
+        document.getElementById('setup').classList.add('hidden');
+        
+        addLog("Syncing with Roblox Data API...");
+        addLog("Injected Stigma Revision 0 loadstring successfully.");
+        
+        update();
+        setInterval(update, 5000);
     }
 
-    async function updateInfo() {
+    async function update() {
         try {
-            // Get ID and Names
+            // Get Info
             const uReq = await fetch(`https://corsproxy.io/?https://users.roblox.com/v1/usernames/users`, {
                 method: 'POST', headers: {'Content-Type': 'application/json'},
-                body: JSON.stringify({usernames: [username]})
+                body: JSON.stringify({usernames: [user]})
             });
             const uData = await uReq.json();
-            const user = uData.data[0];
+            const ud = uData.data[0];
 
-            document.getElementById('pfp').src = `https://www.roblox.com/headshot-thumbnail/image?userId=${user.id}&width=420&height=420&format=png`;
-            document.getElementById('d-name').innerText = user.displayName;
-            document.getElementById('u-name').innerText = "@" + user.name;
+            document.getElementById('pfp').src = `https://www.roblox.com/headshot-thumbnail/image?userId=${ud.id}&width=420&height=420&format=png`;
+            document.getElementById('disp-name').innerText = ud.displayName;
+            document.getElementById('user-name').innerText = "@" + ud.name;
 
-            // Get Game Status
+            // Get Presence
             const pReq = await fetch(`https://corsproxy.io/?https://presence.roblox.com/v1/presence/users`, {
                 method: 'POST', headers: {'Content-Type': 'application/json'},
-                body: JSON.stringify({userIds: [user.id]})
+                body: JSON.stringify({userIds: [ud.id]})
             });
             const pData = await pReq.json();
-            const presence = pData.userPresences[0];
+            const pres = pData.userPresences[0];
 
-            const dot = document.getElementById('s-dot');
-            const txt = document.getElementById('s-text');
-            const game = document.getElementById('g-name');
+            const pill = document.getElementById('stat-pill');
+            const gName = document.getElementById('game-name');
 
-            if(presence.userPresenceType === 2) { // In Game
-                dot.style.background = "#00ffa3"; dot.style.color = "#00ffa3";
-                txt.innerText = "ONLINE (IN-GAME)"; txt.style.color = "#00ffa3";
-                game.innerText = presence.lastLocation; game.style.color = "#00ffa3";
-            } else if(presence.userPresenceType === 1) { // Online
-                dot.style.background = "#00ffa3"; dot.style.color = "#00ffa3";
-                txt.innerText = "ONLINE"; txt.style.color = "#00ffa3";
-                game.innerText = "Browsing Website"; game.style.color = "#ff2a2a";
+            if(pres.userPresenceType === 2) {
+                pill.innerText = "Online (In-Game)"; pill.style.borderColor = "#00ffa3";
+                gName.innerText = pres.lastLocation;
+                addLogOnce(`Instance found: ${pres.lastLocation}`);
+            } else if(pres.userPresenceType === 1) {
+                pill.innerText = "Online"; pill.style.borderColor = "#fff";
+                gName.innerText = "User is in Menu";
             } else {
-                dot.style.background = "#ff2a2a"; dot.style.color = "#ff2a2a";
-                txt.innerText = "OFFLINE"; txt.style.color = "#ff2a2a";
-                game.innerText = "Roblox Client Closed"; game.style.color = "#444";
+                pill.innerText = "Offline"; pill.style.borderColor = "#ff2a2a";
+                gName.innerText = "No Client Detected";
             }
         } catch(e) {}
     }
 
-    async function execute() {
-        addLog("[SENDING] Requesting Stigma execution...");
-        try {
-            await fetch(mailbox, { method: 'POST', body: script });
-            addLog("[SUCCESS] Loadstring broadcasted to Game Client.");
-        } catch(e) {
-            addLog("[ERROR] Cloud Sync Failed.");
-        }
+    function addLog(msg) {
+        const time = new Date().toLocaleTimeString([], {hour12: false});
+        const l = document.getElementById('logs');
+        l.innerHTML += `<div><span>[${time}]</span> ${msg}</div>`;
+        l.scrollTop = l.scrollHeight;
     }
 
-    function addLog(m) {
-        const w = document.getElementById('logs');
-        w.innerHTML += `<div>${m}</div>`;
-        w.scrollTop = w.scrollHeight;
-    }
-
-    function toggleMusic() {
-        const m = document.getElementById('bg-music');
-        const b = document.getElementById('mBtn');
-        if(!playing) {
-            m.play(); b.innerText = "🎵 MUSIC: ON"; b.style.color = "#00ffa3"; playing = true;
-        } else {
-            m.pause(); b.innerText = "🎵 MUSIC: OFF"; b.style.color = "#444"; playing = false;
+    let history = [];
+    function addLogOnce(msg) {
+        if(!history.includes(msg)) {
+            addLog(msg);
+            history.push(msg);
         }
     }
 </script>
+
 </body>
-    </html>
+</html>
